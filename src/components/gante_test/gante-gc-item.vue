@@ -1,17 +1,55 @@
 <template>
   <div class="ganteview-content">
-    <div v-for="(item,index) in gante_data" :key="index" class="ganteview-ones">
-      <div class="ganteview-content-one">
-        <div @mousemove="showToast"  @mouseleave="hideToast" :data-toast="index" :style="{width:item.width?item.width+'px':0,left:item.left?item.left+'px':0,background:item.bg_color?item.bg_color:'#00b0ff'}" class="ganteview-item"></div>
-        <div @mousemove="showToast" @mouseleave="hideToast"  :data-toast="index" :style="{width:item.width?item.width+'px':0,left:item.left?item.left+'px':0,background:item.bg_color?item.bg_color:'#00b0ff'}" class="ganteview-item has-child">
-          <!--<span :style="{borderLeftColor:item.bg_color?item.bg_color:'#00b0ff'}" class="sanjiao-left"></span>
-          <span :style="{borderRightColor:item.bg_color?item.bg_color:'#00b0ff'}" class="sanjiao-right"></span>-->
+    <div v-for="(item,index) in gante_data" :key="item.gunter_id" class="ganteview-ones">
+      <div class=" ganteview-content-one" v-if="item.level === 2" >
+        <div style="position: relative;">
+
+          <div
+            @mousemove="showToast"  
+            @mouseleave="hideToast" 
+            :data-toast="index" 
+            :style="{
+              width:item.width?item.width+'px':0,
+              left:item.left?item.left+'px':0,
+              background:item.bg_color?item.bg_color:'#00b0ff',
+            }" 
+            class="ganteview-item"
+          >
+          </div>
+        </div>
+        <div style="position: relative;">
+
+          <div
+            @mousemove="showToast"  
+            @mouseleave="hideToast" 
+            :data-toast="index" 
+            :style="{
+              width:item.width1?item.width1+'px':0,
+              left:item.left1?item.left1+'px':0,
+              top: '18px',
+              background:item.bg_color1?item.bg_color1:'#00b0ff',
+              lineHeight: '30px',
+            }" 
+            class="ganteview-item"
+          >
+          </div>
         </div>
       </div>
-      <ganteview-item v-show="item.open" v-if="item.children" :th_data="th_data"  :gante_data="item.children">
-        <span style="display: none">1</span>
-      </ganteview-item>
+      <!-- <div class="ganteview-content-one">
+        <div 
+          @mousemove="showToast" 
+          @mouseleave="hideToast"  
+          :data-toast="index" 
+          :style="{width:item.width?item.width+'px':0,left:item.left?item.left+'px':0,background:item.bg_color?item.bg_color:'#00b0ff'}" 
+          class="ganteview-item has-child">
+          <span :style="{borderLeftColor:item.bg_color?item.bg_color:'#00b0ff'}" class="sanjiao-left"></span>
+          <span :style="{borderRightColor:item.bg_color?item.bg_color:'#00b0ff'}" class="sanjiao-right"></span>
+        </div>
+      </div> -->
+      <!--  v-show="item.open" -->
+      <ganteview-item v-if="item.children" :th_data="th_data" :gante_data="item.children"></ganteview-item>
     </div>
+    <!-- slot of ganteView_column -->
     <slot></slot>
   </div>
 </template>
@@ -25,6 +63,12 @@
     props:{
       gante_data:Array,
       th_data:Object,
+    },
+    mounted() {
+      console.log(this.gante_data)
+    },
+    updated() {
+      console.log('gante-gc-item.vue updated')
     },
     methods:{
       showToast(e){
@@ -68,17 +112,19 @@
     position: relative;
   }
   .ganteview-content-one{
-    height: 44px;
+    /* 每一条时间跨度的容器高度 */
+    height: 45px;
     box-sizing: border-box;
     line-height: 44px;
     border-bottom: 1px solid #ebeef5;;
   }
   .ganteview-item{
     position: absolute;
-    height: 25px;
-    border-radius: 3px;
+    /* 每一条进度的高度值 */
+    height: 10px;
+    border-radius: 5px;
     background: #00b0ff;
-    margin-top: 9px;
+    margin-top: 8px;
     cursor: pointer;
   }
   .ganteview-item.has-child{

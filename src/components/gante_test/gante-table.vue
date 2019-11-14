@@ -244,6 +244,9 @@
     min-height: 16px;
     text-align: center;
   }
+  .gante-th .cell {
+    background: #fdf8f4;
+  }
   #gante-table__column-resize-proxy{
     position: absolute;
     top:0;

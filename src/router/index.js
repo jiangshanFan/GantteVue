@@ -9,8 +9,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'gunter',
-      component: gunter
+      component: gunter,
+      name: 'INDEX',
+      children: [
+        {
+          path: '/gantte',
+          name: 'gunter',
+          component: gunter
+        }
+      ],
     }
   ]
 })

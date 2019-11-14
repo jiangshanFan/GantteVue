@@ -6,7 +6,11 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted(){
+    // this.$router.push('/gantte');
+    console.log(this);
+  },
 }
 </script>
 

@@ -76,5 +76,7 @@ const resize = {
     shrink.addEventListener('scroll', onScroll, passiveEvents)
   }
 }
-export {resize}
+export {
+  resize,
+}
 

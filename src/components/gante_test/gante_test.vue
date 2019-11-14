@@ -1,5 +1,6 @@
 <template>
   <div class="gante">
+    <gante ref="gante" />
   </div>
 </template>
 <script>
@@ -40,7 +41,7 @@
       	title:{value:'任务名称',width:80,showToast:false,listen_click:true},
       	startTime:{value:'开始时间',width:150,showToast:true,chooseTime:true,time_mode:1},
       	endTime:{value:'结束时间',width:150,showToast:true,chooseTime:true,time_mode:2},
-      	biaoti:{value:'内容',width:450,shrink:true,showToast:true,edit:true}
+      	charge:{value:'内容',width:450,shrink:true,showToast:true,edit:true}
      	}
   	其中
       	value:th的名称,
@@ -56,14 +57,14 @@
   	3.ganteData示例[
       	{
         	gunter_id:1,
-        	params:{title:'项目制作任务',startTime:'2018-12-19',endTime:'2019-1-3',biaoti:'这是任务标题内容'},
+        	params:{title:'项目制作任务',startTime:'2018-12-19',endTime:'2019-1-3',charge:'这是任务标题内容'},
         	start_time:new Date(2018,11,19).getTime(),
         	end_time:new Date(2019,0,3).getTime(),
         	level:1,
         	children:[
           	{
             	gunter_id:2,
-            	params:{title:'子任务',startTime:'2018-12-17',endTime:'2019-1-1',biaoti:'这是第一级子任务内容'},
+            	params:{title:'子任务',startTime:'2018-12-17',endTime:'2019-1-1',charge:'这是第一级子任务内容'},
             	start_time:new Date(2018,11,17).getTime(),
             	end_time:new Date(2019,0,1).getTime(),
             	bg_color:'yellow',
@@ -80,28 +81,25 @@
       	children: 子任务数据
  */
 
-
+  import gante from './gante.vue'
   export default{
     name: 'gante_test',
+    components: {
+      gante
+    },
     mounted(){
       // params: 渲染表格的数据
       // start_time, end_time, 渲染图表的数据
       let data= this.sourceData,
-      th_data = {
-        title:{value:'内容',width:80,showToast:false,listen_click:true},
-        startTime:{value:'时间',width:150,showToast:true,chooseTime:true,time_mode:1},
-        endTime:{value:'结束时间',width:150,showToast:true,chooseTime:true,time_mode:2},
-        biaoti:{value:'负责人',width:150,shrink:true,showToast:true,edit:true},
-        plane:{value:'日期',width:80,flag:1},
-      }
-      this.$gante({
+      th_data = this.th_data;
+      this.$refs.gante.init({
         container:'.gante',
         ganteData:data,
         start_time:new Date('2018/11/01').getTime(),
-        end_time:new Date('2019/2/4').getTime(),
-        tabe_width:'calc(100% - 600px)',
+        end_time:new Date('2029/1/4').getTime(),
+        tabe_width:'30%',
         open:true,
-        height:'500px',
+        height:'300px',
         time_mode:1,
         th_data:th_data,
         onEdit(data){
@@ -112,57 +110,196 @@
         }
       });
     },
+    updated() {
+      console.log('gante-test.vue updated')
+      this.$refs.gante.init({
+        container:'.gante',
+        ganteData:JSON.parse(JSON.stringify(this.sourceData)),
+        start_time:new Date('2018/11/01').getTime(),
+        end_time:new Date('2029/1/4').getTime(),
+        tabe_width:'30%',
+        open:true,
+        height:'300px',
+        time_mode:1,
+        th_data: JSON.parse(JSON.stringify(this.th_data)),
+        onEdit(data){
+          console.log(data)
+        },
+        onClick(data){
+          console.log(data)
+        }
+      });
+      // this.$gante({
+      //   container:'.gante',
+      //   ganteData:data,
+      //   start_time:new Date('2018/11/01').getTime(),
+      //   end_time:new Date('2019/2/4').getTime(),
+      //   tabe_width:'30%',
+      //   open:true,
+      //   height:'300px',
+      //   time_mode:1,
+      //   th_data:th_data,
+      //   onEdit(data){
+        //     console.log(data)
+      //   },
+      //   onClick(data){
+        //     console.log(data)
+      //   }
+      // });
+    },
     data () {
+      // 此处时间轴的月份比start_time的月份多一个月,所有在处理顶部时间时必须使用new Date获取到月份减少1
       return {
-          sourceData: [
+        th_data: {
+          title:{value:'任务',width:80,showToast:false,listen_click:true},
+          startTime:{value:'计划开始时间',width:150,showToast:true,chooseTime:true,time_mode:1},
+          endTime:{value:'计划结束时间',width:150,showToast:true,chooseTime:true,time_mode:2},
+          actual_startTime:{value:'实际开始时间',width:150,showToast:true,chooseTime:true,time_mode:1},
+          actual_endTime:{value:'实际结束时间',width:150,showToast:true,chooseTime:true,time_mode:2},
+          charge:{value:'负责人',width:150,shrink:true,showToast:true,edit:true},
+        },
+        sourceData: [
           {
             gunter_id:1,
-            params:{title:'项目启动会议',startTime:'2018-11-3',endTime:'2018-11-6',biaoti:'余贝'},
-            start_time:new Date(2018,10,2).getTime(),
-            end_time:new Date(2018,10,10).getTime(),
+            params:{subProject:'项目启动会议',startTime:'2018-11-3',endTime:'2018-11-6',charge:'余贝'},
+            // start_time:new Date(2018,10,2).getTime(),
+            // end_time:new Date(2018,10,10).getTime(),
             level:1,
            	children:[
              	{
                	gunter_id:4,
-               	params:{title:'子任务',startTime:'2018-11-1',endTime:'2018-11-3',biaoti:'这是第一级子任务内容'},
+               	params:{
+                  subProject:'项目启动会议',
+                  title:'子任务1',
+                  startTime:'2018-11-2',
+                  endTime:'2018-11-10',
+                  actual_startTime:'2018-11-6',
+                  actual_endTime:'2018-11-12',
+                  charge:'这是第1个子任务内容',
+                  sub: 1,  // 判断是否需要渲染子项目名称
+                  parentId: 1,  // 当点击子项目名称时，需要传递父级标识ID
+                },
+               	start_time:new Date(2018,11 - 1,2).getTime(),
+               	end_time:new Date(2028,11 - 1,10).getTime(),
+                actual_start_time:new Date(2018,10,6).getTime(),
+               	actual_end_time:new Date(2018,10,12).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+                status: 1,
+             	},
+              {
+               	gunter_id:10,
+               	params:{subProject:'项目启动会议',title:'子任务2',startTime:'2018-11-1',endTime:'2018-11-3',charge:'这是2个级子任务内容'},
                	start_time:new Date(2018,10,12).getTime(),
-               	end_time:new Date(2018,10,15).getTime(),
-               	bg_color:'yellow',
-               	level:2
+               	end_time:new Date(2018,10,18).getTime(),
+                actual_start_time:new Date(2018,10,14).getTime(),
+               	actual_end_time:new Date(2018,10,18).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+             	},
+              {
+               	gunter_id:17,
+               	params:{subProject:'项目启动会议',title:'子任务3',startTime:'2018-11-1',endTime:'2018-11-3',charge:'这是第3个子任务内容'},
+               	start_time:new Date(2018,10,18).getTime(),
+               	end_time:new Date(2018,10,25).getTime(),
+                actual_start_time:new Date(2018,10,16).getTime(),
+               	actual_end_time:new Date(2018,10,23).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+             	},
+              {
+               	gunter_id:101,
+               	params:{subProject:'项目启动会议',title:'子任务31',startTime:'2018-11-1',endTime:'2018-11-3',charge:'这是第4个子任务内容'},
+               	start_time:new Date(2018,10,18).getTime(),
+               	end_time:new Date(2018,10,25).getTime(),
+                actual_start_time:new Date(2018,10,16).getTime(),
+               	actual_end_time:new Date(2018,10,23).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+                // 当有这个条件时表示此 gante-td 单元格的 border-bottom 需要设置，其他不需要设置
+                border: 0,
              	}
            	]
           },
           {
             gunter_id:2,
-            params:{title:'MD设计',startTime:'2018-11-1',endTime:'2018-11-3',biaoti:'王生'},
-            start_time:new Date(2018,11,30).getTime(),
-            end_time:new Date(2018,11,30).getTime(),
+            params:{subProject:'MD设计',startTime:'2018-11-1',endTime:'2018-11-3',charge:'王生'},
+            // start_time:new Date(2018,11,30).getTime(),
+            // end_time:new Date(2018,11,30).getTime(),
             level:1,
             children:[
              	{
                	gunter_id:5,
-               	params:{title:'子任务',startTime:'2018-11-1',endTime:'2018-11-3',biaoti:'王生'},
+               	params:{
+                  subProject:'MD设计',
+                  title:'子任务4',
+                  startTime:'2018-11-1',
+                  endTime:'2018-11-3',
+                  charge:'王生任务1',
+                  sub: 1,
+                  parentId: 2,  // 当点击子项目名称时，需要传递父级标识ID
+                },
                	start_time:new Date(2018,10,10).getTime(),
                	end_time:new Date(2018,10,15).getTime(),
-               	bg_color:'yellow',
-               	level:2
+                actual_start_time:new Date(2018,10,12).getTime(),
+               	actual_end_time:new Date(2018,10,20).getTime(),
+                bg_color1:'red',
+               	bg_color:'#00b0ff',
+               	level:2,
+             	},
+              {
+               	gunter_id:18,
+               	params:{subProject:'MD设计',title:'子任务5',startTime:'2018-11-1',endTime:'2018-11-3',charge:'王生任务2'},
+               	start_time:new Date(2018,10,18).getTime(),
+               	end_time:new Date(2018,10,25).getTime(),
+                actual_start_time:new Date(2018,10,16).getTime(),
+               	actual_end_time:new Date(2018,10,23).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+                border: 0,
              	}
            	]
           },
           {
             gunter_id:3,
-            params:{title:'MD设计',startTime:'2018-11-1',endTime:'2018-11-3',biaoti:'李生'},
-            start_time:new Date(2018,11,30).getTime(),
-            end_time:new Date(2018,11,30).getTime(),
+            params:{subProject:'MD设计2',startTime:'2018-11-1',endTime:'2018-11-3',charge:'李生'},
             level:1,
             children:[
              	{
                	gunter_id:6,
-               	params:{title:'子任务',startTime:'2018-11-1',endTime:'2018-11-3',biaoti:'李生'},
+               	params:{
+                  subProject:'MD设计2',
+                  title:'子任务6',
+                  startTime:'2018-11-1',
+                  endTime:'2018-11-3',
+                  charge:'李生任务1',
+                  sub: 1,
+                  parentId: 3,  // 当点击子项目名称时，需要传递父级标识ID
+                },
                	start_time:new Date(2018,10,10).getTime(),
                	end_time:new Date(2018,10,15).getTime(),
-               	bg_color:'yellow',
-               	level:2
+                actual_start_time:new Date(2018,10,12).getTime(),
+               	actual_end_time:new Date(2018,10,21).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+             	},
+              {
+               	gunter_id:19,
+               	params:{subProject:'MD设计2',title:'子任务7',startTime:'2018-11-1',endTime:'2018-11-3',charge:'李生任务2'},
+               	start_time:new Date(2018,10,18).getTime(),
+               	end_time:new Date(2018,10,25).getTime(),
+                actual_start_time:new Date(2018,10,16).getTime(),
+               	actual_end_time:new Date(2018,10,23).getTime(),
+               	bg_color:'#00b0ff',
+                bg_color1:'red',
+               	level:2,
+                border: 0,
              	}
            	]
           },

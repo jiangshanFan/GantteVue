@@ -3,17 +3,45 @@
     <div @scroll="ganteview_scroll" class="ganteview">
       <div :style="{width:header_width+'px'}" class="ganteview-header" >
         <div class="ganteview-toptime">
-          <div class="ganteview-headercell" :title="item.date" v-for="item in top_time_data" :style="{width:item.width+'px',left:item.left+'px'}">{{item.date}}</div>
+          <div 
+            class="ganteview-headercell" 
+            :title="item.date" 
+            v-for="(item,key) in top_time_data" 
+            :key="key"
+            :style="{width:item.width+'px',left:item.left+'px'}"
+          >
+            {{item.date}}
+          </div>
         </div>
         <div class="ganteview-bottomtime">
-          <div class="ganteview-headercell" :title="item.title" v-for="item in bottom_time_data" :style="{width:item.width+'px',left:item.left+'px'}">{{item.date}}</div>
+          <div 
+            class="ganteview-headercell" 
+            :title="item.title" 
+            v-for="(item) in bottom_time_data" 
+            :key="item.title"
+            :style="{width:item.width+'px',left:item.left+'px'}"
+          >
+            {{item.date}}
+          </div>
         </div>
         <!-- <div v-for="item in bottom_time_data" class="ganteview-column"  style="width:100%; height:22px; background-color:#0f0;">
           {{item.is_rest?"休息日":"工作日"}}
         </div> -->
       </div>
-      <gante-gc-item :th_data="th_data" :style="{width:header_width+'px'}" v-if="show_item" class="ganteview-content-box" :gante_data="gante_data" >
-        <div v-for="item in bottom_time_data" class="ganteview-column" :style="{width:item.width+'px',left:item.left+'px',background:item.is_rest?'#f5f5f5':null}"></div>
+      <gante-gc-item 
+        :th_data="th_data" 
+        :style="{width:header_width+'px'}" 
+        v-if="show_item" 
+        class="ganteview-content-box" 
+        :gante_data="gante_data" 
+      >
+        <div 
+          v-for="(item) in bottom_time_data"
+          :key="item.title" 
+          class="ganteview-column" 
+          :style="{width:item.width+'px',left:item.left+'px',background:item.is_rest?'#f5f5f5':null}"
+        >
+        </div>
       </gante-gc-item>
     </div>
   </div>
@@ -23,7 +51,7 @@
   export default{
     data(){
       return{
-        one_px:50,  //每个格子占的像素(默认为50)
+        one_px:20,  //每个格子占的像素(默认为50)
         first_day:null, //开始的时间
         top_time_data:[],//顶部时间刻度
         bottom_time_data:[],//底部时间刻度
@@ -36,8 +64,14 @@
     props:{
       gante_data:Array,
       th_data:Object,
-      start_time:{}, //开始时间
-      end_time:{},
+      start_time:{}, //总的开始时间
+      end_time:{}, // 总的结束时间
+    },
+    mounted() {
+      console.log(this.gante_data)
+    },
+    computed: {
+
     },
     methods:{
       ganteview_scroll(e){
@@ -49,7 +83,10 @@
 //      初始化头部时间刻度
       init(time_mode){
         this.header_width = 0
+        
+        /*----------  当切换时间轴mode时会打印此处但是不会重新渲染到 gante-gc-item.vue  ----------*/
         console.log(this.start_time,this.end_time)
+        
         var time = 0,
           gante_width = this.$refs.ganteview.offsetWidth,
           all_time = 0,//所有的时间总和
@@ -66,6 +103,7 @@
             break;
           case 3:
             time = 30*24*60*60*1000/this.one_px
+            // 此处getMonth不能减1，因为在每一条数据中的时间已经进行了减1操作
             this.first_day = new Date(start_time.getFullYear(),start_time.getMonth(),1)
             mode = 2
             break;
@@ -100,9 +138,12 @@
         }else{
           all_time = gante_width*time + new Date(this.first_day).getTime()
         }
-        this.get_top_time(mode,this.first_day,time,all_time,time_mode)
-        return {time:time,start_time:start_time}
+        this.get_top_time(mode, this.first_day, time,all_time, time_mode)
+        // 此处必须返回this.first_day,因为除了日选择模式，其他模式的start_time都改变了，从而引起left改变
+        return {time:time,start_time:this.first_day}
       },
+
+      //  格式化顶部和底部的时间轴刻度
       format(time,mode){
         var year = time.getFullYear();
         var month = time.getMonth()+1;
@@ -119,7 +160,8 @@
           return year
         }
       },
-//      获取顶部时间
+
+    //  获取顶部时间
       get_top_time(mode,first_time,time,all_width,time_mode){
         var list = []
         for(let i=0;i <= all_width;){
@@ -144,7 +186,8 @@
         }
         this.get_bottom_time(time_mode,this.first_day,time,all_width)
       },
-//      获取底部时间
+
+    //  获取底部时间
       get_bottom_time(mode,first_time,time,all_width){
         var list = []
         for(let i=0;i <= all_width;){
@@ -217,14 +260,15 @@
     overflow: auto;
   }
   .ganteview-header{
+    /* 整体header的高度值是45px */
     position: absolute;
     width: 100%;
     top:0;
     left:0;
-    height:44px;
+    height:45px;
     background-color: #F0F0F0;
     font-size: 13px;
-    z-index:2;
+    z-index:200;
   }
   .ganteview-toptime,.ganteview-bottomtime{
     height:22px;
@@ -237,7 +281,7 @@
     background: #FDF8F4;
   }
   .ganteview-toptime .ganteview-headercell{
-    // text-align: center;
+    /* text-align: center; */
     padding-left: 5px;
     font-weight: bold;
   }
@@ -269,6 +313,7 @@
     position: absolute;
   }
   .ganteview-content-box{
-    padding-top: 44px;
+    /* 甘特图时间跨度区域距离顶部的距离 */
+    padding-top: 45px;
   }
 </style>

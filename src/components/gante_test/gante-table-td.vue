@@ -1,12 +1,21 @@
 <template>
   <div>
-    <div ref="cells" :title="td_data.params[key_value]" class="cell" @click.stop="to_edit($refs.cells,td_data)" :style="{width:th.width ? th.width+'px' : '80px',textIndent:th.shrink ? (td_data.level-1)*10+'px' : null,fontWeight:(td_data.level ==1 && th.shrink && !th.weight) ?'bold':'normal'}">
-      <span style="width: 15px;display: inline-block;text-indent: 0" v-if="th.shrink">
-        <span v-show="td_data.children" style="cursor: pointer;" @click.stop="opens(td_data.gunter_id)"  >
-        </span>
-       </span>
-      <span class="cell-value">{{td_data.params[key_value]}}</span>
-      <div v-if="th.flag===1"><p style="margin:0;">计划</p><p style="margin:0;">实际</p></div>
+    <div 
+      ref="cells" 
+      :title="td_data.params[key_value]" 
+      class="cell" 
+      @click.stop="to_edit($refs.cells,td_data)" 
+      :style="{
+        width:th.width ? th.width+'px' : '80px',
+        textIndent:th.shrink ? (td_data.level-1)*10+'px' : null,
+        fontWeight:(td_data.level ==1 && th.shrink && !th.weight) ?'bold':'normal'
+      }"
+    >
+      <!-- <span style="width: 15px;display: inline-block;text-indent: 0" v-if="th.shrink">
+        <span v-show="td_data.children" style="cursor: pointer;" @click.stop="opens(td_data.gunter_id)"></span>
+      </span> -->
+      <span v-if="key_value !== 'subProject' || (key_value === 'subProject' && td_data.params.sub)" class="cell-value">{{td_data.params[key_value]}}</span>
+      <!-- <div v-if="th.flag===1"><p style="margin:0;">计划</p><p style="margin:0;">实际</p></div> -->
     </div>
     <input class="gante_edit_input_liu" @click="change_calendar($refs.cells,td_data.params[key_value])" :readonly="th.chooseTime" ref="gante_input" v-if="edit" @blur="td_blur(td_data.gunter_id)" type="text" :value="td_data.params[key_value]" >
   </div>
@@ -23,6 +32,9 @@
       th:Object,
       index:Number,
       key_value:String
+    },
+    mounted() {
+      console.log(this.td_data);
     },
     methods:{
 //      获取元素距离浏览器的距离
