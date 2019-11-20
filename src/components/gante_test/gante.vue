@@ -74,8 +74,9 @@ export default {
   },
   mounted() {
     // this.init();
+    console.log('%cGante.vue', 'font-size: 20px;')
     
-    /*----------  当窗体尺寸改变时，更新表格和甘特图的尺寸  ----------*/
+    /*----------  当UI加载完成再执行此段代码，此时可以获取到所有的DOM元素，否则可能无法获取到  ----------*/
     this.$nextTick(function() {
       let gante_box = document.getElementsByClassName("gante-box")[0];
       resize.onelresize(gante_box, function() {

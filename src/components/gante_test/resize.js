@@ -11,6 +11,10 @@ try {
   window.addEventListener('test', null, opts)
 } catch (e) {}
 
+
+/*----------  此处似乎只有onre  ----------*/
+
+
 const resize = {
   onelresize (el, handler) {
     if (!(el instanceof HTMLElement)) {
@@ -62,6 +66,7 @@ const resize = {
       }
     }
 
+    // 每次改变窗体的宽度，都会触发 scroll 方法，因为 窗体改变，窗体中的内容也会相应的被压缩或者膨胀
     function onScroll () {
       newWidth = el.offsetWidth || 1
       newHeight = el.offsetHeight || 1
