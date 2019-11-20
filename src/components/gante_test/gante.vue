@@ -4,8 +4,7 @@
       <!-- 左侧表格生成UI -->
       <div
         :style="{width: Number(tabe_width)? tabe_width+'px' : tabe_width }"
-        class="gante-table-box"
-      >
+        class="gante-table-box">
         <gante-table
           @change-calendar="change_calendar"
           @on-click="onclick"

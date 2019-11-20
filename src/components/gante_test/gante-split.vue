@@ -52,6 +52,9 @@
 			doc_up(){
 				if(this.mouseDown){
 					var _body = document.getElementsByTagName('body')[0]
+					// 当拖动split分割元素改变table_width（改变了表格的宽度和gantte图距离左侧的距离），
+					// 其中 split_resize_left 是被拖动时显示的拖动阴影元素距离父级 gante_split.vue 组件的距离
+					// offsetWidth 是某个元素的宽度，此处确认了表格和gantte图的宽度
 					this.$parent.tabe_width = this.split_resize_left + document.getElementsByClassName('gante-table-box')[0].offsetWidth
 					document.getElementsByClassName('gante-gc-box')[0].style.width = document.getElementsByClassName('gante-box')[0].offsetWidth - this.$parent.tabe_width+'px'
 					this.show_split = false
