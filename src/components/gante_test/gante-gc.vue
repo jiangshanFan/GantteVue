@@ -174,6 +174,7 @@
             first_time = new Date(first_time.getFullYear()+1,0,1)
             date = this.format(old_time,5)
           }
+          // 计算每一个顶部时间占用的宽度，然后叠加计算出整个gantte图的宽度
           var width = (first_time.getTime() - old_time.getTime())/time
           this.header_width += width
           list.push({left:(old_time.getTime()-this.first_day.getTime())/time,width:width,date:date})
